@@ -1,14 +1,14 @@
 {
-  "name": "react-native-swift-socketio",
+  "name": "react-native-socketio",
   "version": "0.1.0",
-  "description": "A react native wrapper for socket.io-client-swift",
+  "description": "A react native wrapper for socket.io-client-swift and socket.io-client-java",
   "main": "index.js",
   "scripts": {
     "test": ""
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kirkness/react-native-swift-socketio.git"
+    "url": "https://github.com/gcrabtree/react-native-socketio.git"
   },
   "keywords": [
     "react-native",
@@ -16,15 +16,16 @@
     "socket-io",
     "sockets",
     "swift",
+    "java",
     "real-time",
     "react-component"
   ],
-  "author": "Henry Kirkness",
+  "author": "Greg Crabtree",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kirkness/react-native-swift-socketio/issues"
+    "url": "https://github.com/gcrabtree/react-native-socketio/issues"
   },
-  "homepage": "https://github.com/kirkness/react-native-swift-socketio",
+  "homepage": "https://github.com/gcrabtree/react-native-socketio",
   "devDependencies": {
     "react-native": "^0.4.2"
   }
