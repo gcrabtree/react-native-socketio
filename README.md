@@ -106,19 +106,19 @@ Optional:
 
 - Run in your project:
 ```sh
-$ npm install react-native-swift-socketio
+$ npm install react-native-socketio
 ```
 
 - Open up your project in xcode and right click the package.
 - Click **Add files to 'Your project name'**
-- Navigate to **/node_modules/react-native-swift-socketio/RNSwiftSocketIO**
+- Navigate to **/node_modules/react-native-socketio/RNSwiftSocketIO**
 - Click 'Add'
 - Click your project in the navigator on the left and go to **build settings**
 - Search for **Objective-C Bridging Header**
 - Double click on the empty column
-- Enter **../node_modules/react-native-swift-socketio/RNSwiftSocketIO/SocketBridge.h**
+- Enter **../node_modules/react-native-socketio/RNSwiftSocketIO/SocketBridge.h**
 - Search for **Header Search Paths**
 - Double Click on the column (likely has other search paths in it already)
-- Enter this text at the bottom of the column $(SRCROOT)/../node_modules/react-native-swift-socketio/RNSwiftSocketIO
+- Enter this text at the bottom of the column $(SRCROOT)/../node_modules/react-native-socketio/RNSwiftSocketIO
 
 ... That should do it! Please let me know of any issues ...
