@@ -1,6 +1,6 @@
 {
   "name": "react-native-swift-socketio",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A react native wrapper for socket.io-client-swift",
   "main": "index.js",
   "scripts": {
