@@ -24,10 +24,10 @@ class SocketIO: NSObject {
   }
 
   /**
-  * Initialise and configure socket
+  * Initialize and configure socket
   */
 
-  @objc func initialise(connection: String, config: NSDictionary) -> Void {
+  @objc func initialize(connection: String, config: NSDictionary) -> Void {
     connectionSocket = NSURL(string: connection);
 
     // Connect to socket with config
@@ -36,7 +36,7 @@ class SocketIO: NSObject {
       options:config as? [String : AnyObject]
     )
 
-    // Initialise onAny events
+    // Initialize onAny events
     self.onAnyEvent()
   }
 

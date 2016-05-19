@@ -30,16 +30,16 @@ public class SocketIoJSONUtil {
         if (args != null && args.length > 0) {
             WritableArray items = Arguments.createArray();
             for (Object object : args) {
-                Class objectClass = object.getClass();
-                if (objectClass == JSONObject.class) {
+                if (object == null) {
+                    items.pushNull();
+                } else if (object instanceof JSONObject) {
                     items.pushMap(jsonObjectToWritableMap((JSONObject) object));
-                } else if (objectClass == JSONArray.class) {
+                } else if (object instanceof JSONArray) {
                     items.pushArray(jsonArrayToWritableArray((JSONArray) object));
                 } else {
-                    Log.e(TAG, "Cannot identify JSONObject. Casting to string and hoping for " +
-                            "best. Object.string = " + object.toString() + "classType = " +
-                            objectClass.toString());
-                    items.pushString(object.toString());
+                    Log.e(TAG, "Cannot identify JSONObject. Pushing null to the array. " +
+                            "Original unidentfied object = " + object);
+                    items.pushNull();
                 }
             }
             return items;
@@ -54,27 +54,28 @@ public class SocketIoJSONUtil {
             String key = iterator.next();
             try {
                 Object object = jsonObject.get(key);
-                Class objectClass = object.getClass();
-                if (objectClass == Boolean.class) {
+                if (object == null) {
+                    items.putNull(key);
+                } else if (object instanceof Boolean) {
                     items.putBoolean(key, ((Boolean) object));
-                } else if (objectClass == Integer.class) {
+                } else if (object instanceof Integer) {
                     items.putInt(key, ((Integer) object));
-                } else if (objectClass == Double.class) {
+                } else if (object instanceof Double) {
                     items.putDouble(key, ((Double) object));
-                } else if (objectClass == Float.class) {
+                } else if (object instanceof Float) {
                     items.putDouble(key, ((Float) object).doubleValue());
-                } else if (objectClass == Long.class) {
+                } else if (object instanceof Long) {
                     items.putDouble(key, ((Long) object).doubleValue());
-                } else if (objectClass == String.class) {
+                } else if (object instanceof String) {
                     items.putString(key, object.toString());
-                } else if (objectClass == JSONObject.class) {
+                } else if (object instanceof JSONObject) {
                     items.putMap(key, jsonObjectToWritableMap((JSONObject) object));
-                } else if (objectClass == JSONArray.class) {
+                } else if (object instanceof JSONArray) {
                     items.putArray(key, jsonArrayToWritableArray((JSONArray) object));
                 } else {
-                    Log.e(TAG, "Cannot identify JSONObject. Casting to string and hoping for best. Key = "
-                            + key + " string = " + object.toString() + "classType = " + objectClass.toString());
-                    items.putString(key, object.toString());
+                    Log.e(TAG, "Cannot identify JSONObject. Inserting Null object for key "
+                            + key + " unidentfied object = " + object);
+                    items.putNull(key);
                 }
             } catch (JSONException error) {
                 Log.e(TAG, "objectsFromJSON JSONException = " + error);
@@ -85,30 +86,31 @@ public class SocketIoJSONUtil {
 
     public static WritableArray jsonArrayToWritableArray(JSONArray jsonArray) {
         WritableArray items = Arguments.createArray();
-        for (int i=0;i<jsonArray.length();i++){
+        for (int i=0; i < jsonArray.length(); i++) {
             try {
                 Object object = jsonArray.get(i);
-                Class objectClass = object.getClass();
-                if (objectClass == Boolean.class) {
+                if (object == null) {
+                    items.pushNull();
+                } else if (object instanceof Boolean) {
                     items.pushBoolean((Boolean) object);
-                } else if (objectClass == Integer.class) {
+                } else if (object instanceof Integer) {
                     items.pushInt((Integer) object);
-                } else if (objectClass == Double.class) {
+                } else if (object instanceof Double) {
                     items.pushDouble((Double) object);
-                } else if (objectClass == Float.class) {
+                } else if (object instanceof Float) {
                     items.pushDouble(((Float) object).doubleValue());
-                } else if (objectClass == Long.class) {
+                } else if (object instanceof Long) {
                     items.pushDouble(((Long) object).doubleValue());
-                } else if (objectClass == String.class) {
+                } else if (object instanceof String) {
                     items.pushString(object.toString());
-                } else if (objectClass == JSONObject.class) {
+                } else if (object instanceof JSONObject) {
                     items.pushMap(jsonObjectToWritableMap((JSONObject) object));
-                } else if (objectClass == JSONArray.class) {
+                } else if (object instanceof JSONArray) {
                     items.pushArray(jsonArrayToWritableArray((JSONArray) object));
                 } else {
-                    Log.e(TAG, "Cannot identify JSONObject. Casting to string and hoping for best. Element # = "
-                            + i + " string = " + object.toString() + "classType = " + objectClass.toString());
-                    items.pushString(object.toString());
+                    Log.e(TAG, "Cannot identify JSONObject. Inserting Null object. " +
+                            "Original unidentfied object = " + object);
+                    items.pushNull();
                 }
             } catch (JSONException error) {
                 Log.e(TAG, "objectsFromJSON JSONException = " + error);

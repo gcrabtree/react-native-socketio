@@ -32,7 +32,7 @@ class Socket {
     };
 
     // Set initial configuration
-    this.sockets.initialise(host, config);
+    this.sockets.initialize(host, config);
   }
 
   _handleEvent (event) {

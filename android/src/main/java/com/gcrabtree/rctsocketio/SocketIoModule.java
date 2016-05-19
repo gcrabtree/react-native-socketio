@@ -42,12 +42,12 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Initialise and configure socket
+     * Initialize and configure socket
      * @param connection Url string to connect to.
      * @param options Configuration options.
      */
     @ReactMethod
-    public void initialise(String connection, ReadableMap options) {
+    public void initialize(String connection, ReadableMap options) {
         try {
             this.mSocket = IO.socket(
                     connection,
@@ -67,7 +67,12 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void emit(String event, ReadableMap items) {
         HashMap<String, Object> map = SocketIoReadableNativeMap.toHashMap((ReadableNativeMap) items);
-        mSocket.emit(event, new JSONObject(map));
+        if (mSocket != null) {
+            mSocket.emit(event, new JSONObject(map));
+        }
+        else {
+            Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize socket first!!!");
+        }
     }
 
     /**
@@ -98,7 +103,12 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void on(String event) {
-        mSocket.on(event, onAnyEventHandler(event));
+        if (mSocket != null) {
+            mSocket.on(event, onAnyEventHandler(event));
+        }
+        else {
+            Log.e(TAG, "Cannot execute on. mSocket is null. Initialize socket first!!!");
+        }
     }
 
     /**
@@ -106,17 +116,12 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connect() {
-        Log.d(TAG,"connect this socket dude");
-        mSocket.connect();
-    }
-
-    /**
-     * Reconnect to socket
-     */
-    @ReactMethod
-    public void reconnect() {
-        Log.d(TAG, "reconnect not implemented in SocketIO-Java client. Set reconnect boolean in " +
-                "options passed in with the initialise function");
+        if (mSocket != null) {
+            mSocket.connect();
+        }
+        else {
+            Log.e(TAG, "Cannot execute connect. mSocket is null. Initialize socket first!!!");
+        }
     }
 
     /**
@@ -124,7 +129,22 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void disconnect() {
-        mSocket.disconnect();
+        if (mSocket != null) {
+            mSocket.disconnect();
+        }
+        else {
+            Log.e(TAG, "Cannot execute disconnect. mSocket is null. Initialize socket first!!!");
+        }
+    }
+
+    // The following functions are not yet implemented but are here for JS side API completeness.
+    /**
+     * Reconnect to socket
+     */
+    @ReactMethod
+    public void reconnect() {
+        Log.d(TAG, "reconnect not implemented in SocketIO-Java client. Set reconnect boolean in " +
+                "options passed in with the initialize function");
     }
 
     /**
