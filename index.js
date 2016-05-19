@@ -1,6 +1,6 @@
 'use strict';
 
-import { DeviceEventEmitter, NativeModules } from 'react-native';
+import { DeviceEventEmitter, NativeModules, Platform } from 'react-native';
 let SocketIO = NativeModules.SocketIO;
 
 class Socket {
@@ -36,13 +36,14 @@ class Socket {
   }
 
   _handleEvent (event) {
-    if (this.handlers.hasOwnProperty(event.name))
+    if (this.handlers.hasOwnProperty(event.name)) {
       this.handlers[event.name](
         (event.hasOwnProperty('items')) ? event.items : null
       );
-
-    if (this.defaultHandlers.hasOwnProperty(event.name))
+    }
+    if (this.defaultHandlers.hasOwnProperty(event.name)) {
       this.defaultHandlers[event.name]();
+    }
 
     if (this.onAnyHandler) this.onAnyHandler(event);
   }
@@ -53,6 +54,9 @@ class Socket {
 
   on (event, handler) {
     this.handlers[event] = handler;
+    if (Platform.OS === 'android') {
+      this.sockets.on(event);
+    }
   }
 
   onAny (handler) {
