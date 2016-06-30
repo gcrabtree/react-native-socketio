@@ -149,7 +149,7 @@ $ npm install react-native-socketio
 3. Register module (in MainActivity.java)
 
     ```
-    import com.github.gcrabtree.rctsocketio.SocketIoPackage;  // <--- import
+    import com.gcrabtree.rctsocketio.SocketIoPackage;  // <--- import
 
     public class MainActivity extends ReactActivity {
       ......
