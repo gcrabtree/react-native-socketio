@@ -76,7 +76,7 @@ class Socket {
   }
 
   disconnect () {
-    this.sockets.close();
+    this.sockets.disconnect();
   }
 
   reconnect () {
