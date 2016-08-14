@@ -76,6 +76,7 @@ class Socket {
   }
 
   disconnect () {
+    this.handlers = {};
     this.sockets.disconnect();
   }
 
