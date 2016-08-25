@@ -74,7 +74,15 @@ class SocketIO: NSObject {
   * Emit event to server
   */
 
-  @objc func emit(event: String, items: AnyObject) -> Void {
+  @objc func emitData(event: String, items: AnyObject) -> Void {
+    self.socket.emit(event, items)
+  }
+
+  /**
+  * Emit event to server
+  */
+
+  @objc func emitString(event: String, items: AnyObject) -> Void {
     self.socket.emit(event, items)
   }
 

@@ -65,10 +65,25 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @param items The data to pass through the SocketIo engine to the server endpoint.
      */
     @ReactMethod
-    public void emit(String event, ReadableMap items) {
+    public void emitData(String event, ReadableMap items) {
         HashMap<String, Object> map = SocketIoReadableNativeMap.toHashMap((ReadableNativeMap) items);
         if (mSocket != null) {
             mSocket.emit(event, new JSONObject(map));
+        }
+        else {
+            Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize socket first!!!");
+        }
+    }
+
+    /**
+     * Emit event to server
+     * @param event The name of the event.
+     * @param item The string to pass through the SocketIo engine to the server endpoint.
+     */
+    @ReactMethod
+    public void emitString(String event, String item) {
+        if (mSocket != null) {
+            mSocket.emit(event, item);
         }
         else {
             Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize socket first!!!");
