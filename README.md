@@ -3,6 +3,13 @@
 This project was forked from Kirkness' React Native Swift Socket.Io project
 [found here](https://github.com/kirkness/react-native-swift-socketio)
 
+Note: We are working on the following items:
+* Reviewing Pull requests and seeing if they are pertinent.
+* Making the project compatible with RN .33 
+* Making the project XCode 8 compatible.
+* Upgrading to Swift 2.3
+* Creating a simple test project
+
 This project now supports both iOS and Android using the same JS calls.
 * Exceptions:
  * The Android version does not support manual reconnects, joinNamespace, or leaveNamespace
