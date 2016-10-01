@@ -64,7 +64,7 @@ class SocketIO: NSObject {
   @objc func addHandlers(handlers: NSDictionary) -> Void {
     for handler in handlers {
       self.socket.on(handler.key as! String) { data, ack in
-        self.bridge.eventDispatcher.sendDeviceEventWithName(
+        self.bridge.eventDispatcher()?.sendDeviceEventWithName(
           "socketEvent", body: handler.key as! String)
       }
     }
@@ -84,10 +84,10 @@ class SocketIO: NSObject {
 
   private func onAnyEventHandler (sock: SocketAnyEvent) -> Void {
     if let items = sock.items {
-      self.bridge.eventDispatcher.sendDeviceEventWithName("socketEvent",
+      self.bridge.eventDispatcher()?.sendDeviceEventWithName("socketEvent",
         body: ["name": sock.event, "items": items])
     } else {
-      self.bridge.eventDispatcher.sendDeviceEventWithName("socketEvent",
+      self.bridge.eventDispatcher()?.sendDeviceEventWithName("socketEvent",
         body: ["name": sock.event])
     }
   }
