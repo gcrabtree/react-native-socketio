@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     compile "com.facebook.react:react-native:+"
-    compile ('io.socket:engine.io-client:0.8.3') {
+    compile ('io.socket:socket.io-client:0.7.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
