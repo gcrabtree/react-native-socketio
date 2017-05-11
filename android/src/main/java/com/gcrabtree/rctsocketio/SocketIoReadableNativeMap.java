@@ -2,6 +2,7 @@ package com.gcrabtree.rctsocketio;
 
 import android.util.Log;
 
+import com.facebook.jni.HybridData;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableNativeMap;
 

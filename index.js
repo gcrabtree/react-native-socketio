@@ -63,8 +63,8 @@ class Socket {
     this.onAnyHandler = handler;
   }
 
-  emit (event, data) {
-    this.sockets.emit(event, data);
+  emit (event, data, ack = () => console.log(`ACK ${event}`)) {
+    this.sockets.emit(event, data, ack);
   }
 
   joinNamespace (namespace) {
