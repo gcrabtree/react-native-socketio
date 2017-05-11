@@ -16,6 +16,7 @@ class Socket {
     this.handlers = {};
     this.onAnyHandler = null;
 
+    if(Platform.OS === "ios") this.sockets.addListener("socketEvent");
     this.deviceEventSubscription = DeviceEventEmitter.addListener(
       'socketEvent', this._handleEvent.bind(this)
     );
