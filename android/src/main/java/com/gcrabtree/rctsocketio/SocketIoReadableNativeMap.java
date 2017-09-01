@@ -73,7 +73,7 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
             String key = iterator.nextKey().toLowerCase();
             switch (key) {
                 case "force new connection":
-                case "forcenew":
+                case "force new":
                     opts.forceNew = options.getBoolean(key);
                     break;
                 case "multiplex":
