@@ -2,6 +2,7 @@ package com.gcrabtree.rctsocketio;
 
 import android.util.Log;
 
+import com.facebook.jni.HybridData;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableNativeMap;
 
@@ -15,6 +16,11 @@ import io.socket.client.IO;
 
 public class SocketIoReadableNativeMap extends ReadableNativeMap {
     private static final String TAG = "SIOReadableNativeMap";
+
+    protected SocketIoReadableNativeMap(HybridData hybridData) {
+        super(hybridData);
+    }
+
     /**
      * Note: This will only be necessary until RN version 0.26 goes live
      * It will be deprecated from the project, as this is just included in that version of RN.
@@ -57,7 +63,7 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
     /**
      * This converts a SocketIoReadableNativeMap to a SocketIO Option object.
      * @param options ReadableNativeMap that is a JS bridged hash of options.
-     * @return IO.Options object that has been populated. Currently incomplete. PRs welcome.
+     * @return IO.Options object that has been populated. Currently incomplete. Pas welcome.
      */
     public static IO.Options mapToOptions(ReadableNativeMap options) {
         ReadableMapKeySetIterator iterator = options.keySetIterator();
@@ -67,7 +73,7 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
             String key = iterator.nextKey().toLowerCase();
             switch (key) {
                 case "force new connection":
-                case "forcenew":
+                case "force new"
                     opts.forceNew = options.getBoolean(key);
                     break;
                 case "multiplex":
