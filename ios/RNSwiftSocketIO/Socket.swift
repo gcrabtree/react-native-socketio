@@ -9,33 +9,33 @@
 import Foundation
 
 @objc(SocketIO)
-class SocketIO: NSObject {
+class SocketIO : RCTEventEmitter {
 
   var socket: SocketIOClient!
   var connectionSocket: NSURL!
-  var bridge: RCTBridge!
 
   /**
   * Construct and expose RCTBridge to module
   */
 
-  @objc func initWithBridge(_bridge: RCTBridge) {
+  @objc(initWithBridge:)
+  func initWithBridge(_bridge: RCTBridge) {
     self.bridge = _bridge
   }
 
   /**
   * Initialize and configure socket
   */
-
-  @objc func initialize(connection: String, config: NSDictionary) -> Void {
-    connectionSocket = NSURL(string: connection);
-
+  
+  @objc(initialize:config:)
+  func initialize(connection: NSString, config: NSDictionary) -> Void {
+    connectionSocket = NSURL(string: String(connection));
     // Connect to socket with config
     self.socket = SocketIOClient(
-      socketURL: self.connectionSocket,
-      options:config as? [String : AnyObject]
+      socketURL: self.connectionSocket!,
+      config: config as NSDictionary?
     )
-
+    
     // Initialize onAny events
     self.onAnyEvent()
   }
@@ -44,15 +44,17 @@ class SocketIO: NSObject {
   * Manually join the namespace
   */
 
-  @objc func joinNamespace(namespace: String)  -> Void {
-        self.socket.joinNamespace(namespace);
+  @objc(joinNamespace:)
+  func joinNamespace(namespace: String)  -> Void {
+    self.socket.joinNamespace(namespace);
   }
 
   /**
   * Leave namespace back to '/'
   */
 
-  @objc func leaveNamespace() {
+  @objc(leaveNamespace)
+  func leaveNamespace() {
     self.socket.leaveNamespace();
   }
 
@@ -61,11 +63,11 @@ class SocketIO: NSObject {
   * add NSDictionary of handler events
   */
 
-  @objc func addHandlers(handlers: NSDictionary) -> Void {
+  @objc(addHandlers:)
+  func addHandlers(handlers: NSDictionary) -> Void {
     for handler in handlers {
-      self.socket.on(handler.key as! String) { data, ack in
-        self.bridge.eventDispatcher.sendDeviceEventWithName(
-          "socketEvent", body: handler.key as! String)
+      self.socket.on(handler.value as! String) { data, ack in
+        self.sendEvent(withName: "socketEvent", body: handler.value as! String)
       }
     }
   }
@@ -73,9 +75,16 @@ class SocketIO: NSObject {
   /**
   * Emit event to server
   */
-
-  @objc func emit(event: String, items: AnyObject) -> Void {
-    self.socket.emit(event, items)
+  
+  @objc(emit:items:ack:)
+  func emit(event: String, items: AnyObject, ack: RCTResponseSenderBlock?) -> Void {
+    if let ack = ack {
+      self.socket.emitWithAck(event, items as! SocketData).timingOut(after: 1) { data in
+        ack(data)
+      }
+    } else {
+      self.socket.emit(event, items as! SocketData)
+    } 
   }
 
   /**
@@ -84,11 +93,9 @@ class SocketIO: NSObject {
 
   private func onAnyEventHandler (sock: SocketAnyEvent) -> Void {
     if let items = sock.items {
-      self.bridge.eventDispatcher.sendDeviceEventWithName("socketEvent",
-        body: ["name": sock.event, "items": items])
+      self.sendEvent(withName: "socketEvent", body: ["name": sock.event, "items": items])
     } else {
-      self.bridge.eventDispatcher.sendDeviceEventWithName("socketEvent",
-        body: ["name": sock.event])
+      self.sendEvent(withName: "socketEvent", body: ["name": sock.event])
     }
   }
 
@@ -97,22 +104,30 @@ class SocketIO: NSObject {
   * Currently adding handlers to event on the JS layer
   */
 
-  @objc func onAnyEvent() -> Void {
+  @objc(onAnyEvent)
+  func onAnyEvent() -> Void {
     self.socket.onAny(self.onAnyEventHandler)
   }
 
   // Connect to socket
-  @objc func connect() -> Void {
+  @objc(connect)
+  func connect() -> Void {
     self.socket.connect()
   }
 
   // Reconnect to socket
-  @objc func reconnect() -> Void {
+  @objc(reconnect)
+  func reconnect() -> Void {
     self.socket.reconnect()
   }
 
   // Disconnect from socket
-  @objc func disconnect() -> Void {
+  @objc(disconnect)
+  func disconnect() -> Void {
     self.socket.disconnect()
+  }
+
+  override func supportedEvents() -> [String]! {
+    return ["socketEvent"]
   }
 }
