@@ -20,7 +20,7 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
     protected SocketIoReadableNativeMap(HybridData hybridData) {
         super(hybridData);
     }
-    
+
     /**
      * Note: This will only be necessary until RN version 0.26 goes live
      * It will be deprecated from the project, as this is just included in that version of RN.
@@ -84,6 +84,15 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
                     break;
                 case "connect_timeout":
                     opts.timeout = options.getInt(key);
+                    break;
+                case "reconnectionattempts":
+                    opts.reconnectionAttempts = options.getInt(key);
+                    break;
+                case "reconnectiondelay":
+                    opts.reconnectionDelay = options.getInt(key);
+                    break;
+                case "reconnectiondelaymax":
+                    opts.reconnectionDelayMax = options.getInt(key);
                     break;
                 default:
                     Log.e(TAG, "Could not convert object with key: " + key + ".");
