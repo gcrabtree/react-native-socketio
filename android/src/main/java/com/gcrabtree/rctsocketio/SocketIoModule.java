@@ -27,11 +27,47 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
+/**
+ * Socket.io module for React Native.
+ * Wrapper of socket.io-client-java by Socket.io <https://github.com/socketio/socket.io-client-java>
+ *
+ * @author gcrabtree
+ * @author Nana Axel <ax.lnana@outlook.com>
+ */
 public class SocketIoModule extends ReactContextBaseJavaModule {
+    /**
+     * Tag name.
+     */
     private static final String TAG = "RCTSocketIoModule";
 
+    /**
+     * Wrapped socket connection.
+     */
     private Socket mSocket;
+
+    /**
+     * React context.
+     */
     private ReactApplicationContext mReactContext;
+
+    /**
+     * Socket.io events constants.
+     * Used to allow access in Javascript.
+     */
+    public static final String EVENT_CONNECT = "EVENT_CONNECT";
+    public static final String EVENT_CONNECT_ERROR = "EVENT_CONNECT_ERROR";
+    public static final String EVENT_CONNECT_TIMEOUT = "EVENT_CONNECT_TIMEOUT";
+    public static final String EVENT_CONNECTING = "EVENT_CONNECTING";
+    public static final String EVENT_DISCONNECT = "EVENT_DISCONNECT";
+    public static final String EVENT_ERROR = "EVENT_ERROR";
+    public static final String EVENT_MESSAGE = "EVENT_MESSAGE";
+    public static final String EVENT_PING = "EVENT_PING";
+    public static final String EVENT_PONG = "EVENT_PONG";
+    public static final String EVENT_RECONNECT = "EVENT_RECONNECT";
+    public static final String EVENT_RECONNECT_ATTEMPT = "EVENT_RECONNECT_ATTEMPT";
+    public static final String EVENT_RECONNECT_ERROR = "EVENT_RECONNECT_ERROR";
+    public static final String EVENT_RECONNECT_FAILED = "EVENT_RECONNECT_FAILED";
+    public static final String EVENT_RECONNECTING = "EVENT_RECONNECTING";
 
     public SocketIoModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -43,6 +79,27 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
         return "SocketIO";
     }
 
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+
+        constants.put(EVENT_ERROR, Socket.EVENT_ERROR);
+        constants.put(EVENT_RECONNECT_FAILED, Socket.EVENT_RECONNECT_FAILED);
+        constants.put(EVENT_RECONNECTING, Socket.EVENT_RECONNECTING);
+        constants.put(EVENT_RECONNECT, Socket.EVENT_RECONNECT);
+        constants.put(EVENT_PONG, Socket.EVENT_PONG);
+        constants.put(EVENT_PING, Socket.EVENT_PING);
+        constants.put(EVENT_RECONNECT_ERROR, Socket.EVENT_RECONNECT_ERROR);
+        constants.put(EVENT_ERROR, Socket.EVENT_ERROR);
+        constants.put(EVENT_DISCONNECT, Socket.EVENT_DISCONNECT);
+        constants.put(EVENT_CONNECT_TIMEOUT, Socket.EVENT_CONNECT_TIMEOUT);
+        constants.put(EVENT_CONNECT_ERROR, Socket.EVENT_CONNECT_ERROR);
+        constants.put(EVENT_CONNECTING, Socket.EVENT_CONNECTING);
+        constants.put(EVENT_CONNECT, Socket.EVENT_CONNECT);
+
+        return constants;
+    }
+
     /**
      * Initialize and configure socket
      * @param connection Url string to connect to.
@@ -51,13 +108,33 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void initialize(String connection, ReadableMap options) {
         try {
-            this.mSocket = IO.socket(
-                    connection,
-                    SocketIoReadableNativeMap.mapToOptions((ReadableNativeMap) options)
-            );
-        }
-        catch(URISyntaxException exception) {
+            this.mSocket = IO.socket(connection, SocketIoReadableNativeMap.mapToOptions((ReadableNativeMap) options));
+        } catch (URISyntaxException exception) {
             Log.e(TAG, "Socket Initialization error: ", exception);
+        }
+    }
+
+    /**
+     * Close the socket
+     */
+    @ReactMethod
+    public void close() {
+        if (mSocket != null) {
+            mSocket.close();
+        } else {
+            Log.e(TAG, "Cannot execute close. mSocket is null. Initialize Socket first.");
+        }
+    }
+
+    /**
+     * Disconnect from socket.
+     */
+    @ReactMethod
+    public void disconnect() {
+        if (mSocket != null) {
+            mSocket.disconnect();
+        } else {
+            Log.e(TAG, "Cannot execute disconnect. mSocket is null. Initialize Socket first");
         }
     }
 
@@ -77,9 +154,8 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
                     ack.invoke(SocketIoJSONUtil.objectsFromJSON(args));
                 }
             });
-        }
-        else {
-            Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize socket first!!!");
+        } else {
+            Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize Socket first.");
         }
     }
 
@@ -89,7 +165,7 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @return an Emitter.Listener that has a callback that will emit the coupled event name and response data
      * to the ReactNative JS layer.
      */
-    private Emitter.Listener onAnyEventHandler (final String event) {
+    private Emitter.Listener onAnyEventHandler(final String event) {
         return new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -113,8 +189,7 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
     public void on(String event) {
         if (mSocket != null) {
             mSocket.on(event, onAnyEventHandler(event));
-        }
-        else {
+        } else {
             Log.e(TAG, "Cannot execute on. mSocket is null. Initialize socket first!!!");
         }
     }
@@ -126,22 +201,20 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
     public void connect() {
         if (mSocket != null) {
             mSocket.connect();
-        }
-        else {
-            Log.e(TAG, "Cannot execute connect. mSocket is null. Initialize socket first!!!");
+        } else {
+            Log.e(TAG, "Cannot execute connect. mSocket is null. Initialize Socket first.");
         }
     }
 
     /**
-     * Disconnect from socket
-     */
+    * Connect to socket
+    */
     @ReactMethod
-    public void disconnect() {
+    public void open() {
         if (mSocket != null) {
-            mSocket.disconnect();
-        }
-        else {
-            Log.e(TAG, "Cannot execute disconnect. mSocket is null. Initialize socket first!!!");
+            mSocket.open();
+        } else {
+            Log.e(TAG, "Cannot execute open. mSocket is null. Initialize Socket first.");
         }
     }
 
@@ -151,8 +224,8 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reconnect() {
-        Log.d(TAG, "reconnect not implemented in SocketIO-Java client. Set reconnect boolean in " +
-                "options passed in with the initialize function");
+        Log.d(TAG, "reconnect not implemented in SocketIO-Java client. Set reconnect boolean in "
+                + "options passed in with the initialize function");
     }
 
     /**
