@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.socket.client.Ack;
 import io.socket.client.IO;
