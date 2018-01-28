@@ -6,9 +6,9 @@ let SocketIO = NativeModules.SocketIO;
 class Socket {
   constructor (host, config) {
 
-    if (typeof host === 'undefined')
-      throw 'Hello there! Could you please give socket a host, please.';
-    if (typeof config === 'undefined')
+    if (typeof host === "undefined")
+      throw "Cannot create a socket connection without a host.";
+    if (typeof config === "undefined")
       config = {};
 
     this.sockets = SocketIO;
@@ -16,10 +16,10 @@ class Socket {
     this.handlers = {};
     this.onAnyHandler = null;
 
-    if(Platform.OS === "ios") this.sockets.addListener("socketEvent");
-    this.deviceEventSubscription = DeviceEventEmitter.addListener(
-      'socketEvent', this._handleEvent.bind(this)
-    );
+    if(Platform.OS === "ios")
+      this.sockets.addListener("socketEvent");
+
+    this.deviceEventSubscription = DeviceEventEmitter.addListener("socketEvent", this._handleEvent.bind(this));
 
     // Set default handlers
     this.defaultHandlers = {
@@ -38,9 +38,7 @@ class Socket {
 
   _handleEvent (event) {
     if (this.handlers.hasOwnProperty(event.name)) {
-      this.handlers[event.name](
-        (event.hasOwnProperty('items')) ? event.items : null
-      );
+      this.handlers[event.name].apply(this, (event.hasOwnProperty('items')) ? event.items : null);
     }
     if (this.defaultHandlers.hasOwnProperty(event.name)) {
       this.defaultHandlers[event.name]();
