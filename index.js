@@ -53,7 +53,7 @@ class Socket {
 
   on (event, handler) {
     this.handlers[event] = handler;
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' || Platform.OS === 'windows') {
       this.sockets.on(event);
     }
   }
