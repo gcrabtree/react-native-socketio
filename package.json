@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/na2axl/react-native-socketio.git"
+    "url": "https://github.com/gcrabtree/react-native-socketio.git"
   },
   "keywords": [
     "react-native",
@@ -23,9 +23,9 @@
   "author": "Greg Crabtree",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/na2axl/react-native-socketio/issues"
+    "url": "https://github.com/gcrabtree/react-native-socketio/issues"
   },
-  "homepage": "https://github.com/na2axl/react-native-socketio",
+  "homepage": "https://github.com/gcrabtree/react-native-socketio",
   "devDependencies": {
     "react-native": "^0.4.4"
   }
