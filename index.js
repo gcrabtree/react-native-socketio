@@ -37,8 +37,11 @@ class Socket {
 
   _handleEvent (event) {
     if (this.handlers.hasOwnProperty(event.name)) {
+      // event parameters are emitted as an array
+      // we spread them to keep the same interface
+      // as the JS socketio client
       this.handlers[event.name](
-        (event.hasOwnProperty('items')) ? event.items : null
+        ...(event.hasOwnProperty('items')) ? event.items : [null]
       );
     }
     if (this.defaultHandlers.hasOwnProperty(event.name)) {
