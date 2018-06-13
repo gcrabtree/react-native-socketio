@@ -15,6 +15,11 @@ import io.socket.client.IO;
 
 public class SocketIoReadableNativeMap extends ReadableNativeMap {
     private static final String TAG = "SIOReadableNativeMap";
+
+    protected SocketIoReadableNativeMap(HybridData hybridData) {
+        super(hybridData);
+    }
+
     /**
      * Note: This will only be necessary until RN version 0.26 goes live
      * It will be deprecated from the project, as this is just included in that version of RN.
