@@ -84,6 +84,9 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
                 case "connect_timeout":
                     opts.timeout = options.getInt(key);
                     break;
+                case "path":
+                    opts.path = options.getString(key);
+                    break;
                 default:
                     Log.e(TAG, "Could not convert object with key: " + key + ".");
             }
