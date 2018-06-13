@@ -79,6 +79,10 @@ class Socket {
     this.sockets.leaveNamespace();
   }
 
+  close(...args) {
+    this.disconnect(...args);
+  }
+
   disconnect () {
     this.sockets.disconnect();
   }
