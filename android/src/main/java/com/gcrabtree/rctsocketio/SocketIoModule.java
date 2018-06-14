@@ -28,6 +28,7 @@ import io.socket.emitter.Emitter;
 public class SocketIoModule extends ReactContextBaseJavaModule {
     private static final String TAG = "RCTSocketIoModule";
 
+    private HashMap<String, Socket> sockets = new HashMap<>();
     private Socket mSocket;
     private ReactApplicationContext mReactContext;
 
@@ -47,12 +48,13 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @param options Configuration options.
      */
     @ReactMethod
-    public void initialize(String connection, ReadableMap options) {
+    public void initialize(String connection, ReadableMap options, String socketID) {
         try {
-            this.mSocket = IO.socket(
+            Socket socket = IO.socket(
                     connection,
                     SocketIoReadableNativeMap.mapToOptions((ReadableNativeMap) options)
             );
+            sockets.put(socketID, socket);
         }
         catch(URISyntaxException exception) {
             Log.e(TAG, "Socket Initialization error: ", exception);
@@ -65,10 +67,11 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @param items The data to pass through the SocketIo engine to the server endpoint.
      */
     @ReactMethod
-    public void emit(String event, ReadableMap items) {
+    public void emit(String event, ReadableMap items, String socketID) {
         HashMap<String, Object> map = SocketIoReadableNativeMap.toHashMap((ReadableNativeMap) items);
-        if (mSocket != null) {
-            mSocket.emit(event, new JSONObject(map));
+        Socket socket = sockets.get(socketID);
+        if (socket != null) {
+            socket.emit(event, new JSONObject(map));
         }
         else {
             Log.e(TAG, "Cannot execute emit. mSocket is null. Initialize socket first!!!");
@@ -81,7 +84,7 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @return an Emitter.Listener that has a callback that will emit the coupled event name and response data
      * to the ReactNative JS layer.
      */
-    private Emitter.Listener onAnyEventHandler (final String event) {
+    private Emitter.Listener onAnyEventHandler (final String event, final String socketID) {
         return new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -91,6 +94,7 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
                 if (items != null) {
                     params.putArray("items", items);
                 }
+                params.putString("socketID", socketID);
                 ReactNativeEventUtil.sendEvent(mReactContext, "socketEvent", params);
             }
         };
@@ -102,9 +106,10 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * @param event The name of the event.
      */
     @ReactMethod
-    public void on(String event) {
-        if (mSocket != null) {
-            mSocket.on(event, onAnyEventHandler(event));
+    public void on(String event, String socketID) {
+        Socket socket = sockets.get(socketID);
+        if (socket != null) {
+            socket.on(event, onAnyEventHandler(event, socketID));
         }
         else {
             Log.e(TAG, "Cannot execute on. mSocket is null. Initialize socket first!!!");
@@ -115,9 +120,10 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * Connect to socket
      */
     @ReactMethod
-    public void connect() {
-        if (mSocket != null) {
-            mSocket.connect();
+    public void connect(String socketID) {
+        Socket socket = sockets.get(socketID);
+        if (socket != null) {
+            socket.connect();
         }
         else {
             Log.e(TAG, "Cannot execute connect. mSocket is null. Initialize socket first!!!");
@@ -128,9 +134,10 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
      * Disconnect from socket
      */
     @ReactMethod
-    public void disconnect() {
-        if (mSocket != null) {
-            mSocket.disconnect();
+    public void disconnect(String socketID) {
+        Socket socket = sockets.get(socketID);
+        if (socket != null) {
+            socket.disconnect();
         }
         else {
             Log.e(TAG, "Cannot execute disconnect. mSocket is null. Initialize socket first!!!");
