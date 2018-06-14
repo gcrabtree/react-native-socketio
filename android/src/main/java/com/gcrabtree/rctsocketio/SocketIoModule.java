@@ -138,6 +138,7 @@ public class SocketIoModule extends ReactContextBaseJavaModule {
         Socket socket = sockets.get(socketID);
         if (socket != null) {
             socket.disconnect();
+            sockets.remove(socketID);
         }
         else {
             Log.e(TAG, "Cannot execute disconnect. mSocket is null. Initialize socket first!!!");
