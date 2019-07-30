@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/gcrabtree/react-native-socketio",
   "devDependencies": {
-    "react-native": "^0.4.2"
+    "react-native": "^0.4.4"
   }
 }
