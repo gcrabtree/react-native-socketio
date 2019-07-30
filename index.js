@@ -16,6 +16,7 @@ class Socket {
     this.handlers = {};
     this.onAnyHandler = null;
 
+    if(Platform.OS === "ios") this.sockets.addListener("socketEvent");
     this.deviceEventSubscription = DeviceEventEmitter.addListener(
       'socketEvent', this._handleEvent.bind(this)
     );
@@ -63,8 +64,8 @@ class Socket {
     this.onAnyHandler = handler;
   }
 
-  emit (event, data) {
-    this.sockets.emit(event, data);
+  emit (event, data, ack = () => console.log(`ACK ${event}`)) {
+    this.sockets.emit(event, data, ack);
   }
 
   joinNamespace (namespace) {
