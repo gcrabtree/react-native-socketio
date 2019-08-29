@@ -64,7 +64,11 @@ class Socket {
   }
 
   emit (event, data) {
-    this.sockets.emit(event, data);
+    if (typeof data === 'string') {
+      this.sockets.emitString(event, data);
+    } else {
+      this.sockets.emitData(event, data);
+    }
   }
 
   joinNamespace (namespace) {
