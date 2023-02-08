@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableNativeMap;
+import com.facebook.jni.HybridData;
 
 import java.util.HashMap;
 
@@ -15,6 +16,11 @@ import io.socket.client.IO;
 
 public class SocketIoReadableNativeMap extends ReadableNativeMap {
     private static final String TAG = "SIOReadableNativeMap";
+
+    protected SocketIoReadableNativeMap(HybridData hybridData) {
+        super(hybridData);
+    }
+
     /**
      * Note: This will only be necessary until RN version 0.26 goes live
      * It will be deprecated from the project, as this is just included in that version of RN.
@@ -78,6 +84,9 @@ public class SocketIoReadableNativeMap extends ReadableNativeMap {
                     break;
                 case "connect_timeout":
                     opts.timeout = options.getInt(key);
+                    break;
+                case "path":
+                    opts.path = options.getString(key);
                     break;
                 default:
                     Log.e(TAG, "Could not convert object with key: " + key + ".");
